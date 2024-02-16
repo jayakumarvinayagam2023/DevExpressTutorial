@@ -2,16 +2,17 @@
 @inherits EmployeeMainBase
 
 
-<DxGrid Data="@Employees" KeyboardNavigationEnabled="true"
+<DxGrid @ref="Grid" Data="@Employees" KeyboardNavigationEnabled="true"
         KeyFieldName="Id"
-        @bind-SelectedDataItems="@SelectedDataItems">
+        SelectedDataItem="@SelectedDataItem"
+        @bind-SelectedDataItems="@SelectedDataItems"
+        CustomizeEditModel="Grid_CustomizeEditModel" 
+        EditMode="GridEditMode.EditRow"
+        SelectedDataItemChanged="OnSelectedDataItemChanged">
     <Columns>
         <DxGridSelectionColumn Width="104px" />
-        <DxGridDataColumn FieldName="ReplaceFile" Width="10%" MinWidth="90" />   
-        <DxDataGridCheckBoxColumn Field="ReplaceFile" Width="60px"
-                                  ValueChecked="@("Y")"
-                                  ValueUnchecked="@("N")"></DxDataGridCheckBoxColumn>
-
+   
+        <DxGridDataColumn FieldName="ReplaceFile" Width="10%" MinWidth="90" />
         <DxGridDataColumn FieldName="Id" Width="10%" MinWidth="80" />
         <DxGridDataColumn FieldName="FirstName" MinWidth="80" />
         <DxGridDataColumn FieldName="MiddleName" MinWidth="80" />
@@ -23,7 +24,44 @@
 </DxGrid>
 <p class="demo-text w-100 mt-2">The number of selected products: <b>@(SelectedDataItems.Count())</b></p>
 <div class="d-flex flex-row flex-wrap">
-    <DxButton Text="Scan Cover" SizeMode="SizeMode.Medium" RenderStyle="ButtonRenderStyle.Primary" Click="()=> GenerateScanCover()" />
+    <DxButton Text="Scan Cover" SizeMode="SizeMode.Medium" RenderStyle="ButtonRenderStyle.Success" Click="()=> GenerateScanCover()" />
     <DxButton Text="Cancel" SizeMode="SizeMode.Medium" RenderStyle="ButtonRenderStyle.Secondary" />
 </div>
+
+
+<DxGrid
+        Data="@Employees"
+        PageSize="12"
+        KeyFieldName="Id"
+        ValidationEnabled="false"
+        CustomizeEditModel="Grid_CustomizeEditModel"
+        EditModelSaving="Grid_EditModelSaving"
+        EditMode="GridEditMode.EditRow"
+        KeyboardNavigationEnabled="true">
+    <Columns>
+        <DxGridCommandColumn Width="160px" />
+        <DxGridDataColumn FieldName="FirstName" MinWidth="80" />
+        <DxGridDataColumn FieldName="LastName" MinWidth="80" />
+        <DxGridDataColumn FieldName="ReplaceFile" Width="10%" MinWidth="90" />
+    </Columns>
+</DxGrid>
+
+
+<DxPopup CssClass="popup-demo-events"
+         @bind-Visible="@IsPopUpVisible"
+         ShowFooter="true"
+         CloseOnEscape="false"
+         CloseOnOutsideClick="false"
+         ShowCloseButton="false"
+         HeaderText="Warn Message">
+    <BodyContentTemplate>
+        @(new MarkupString(BorrowerLevelDocumentsWarnContent))
+    </BodyContentTemplate>
+    <FooterContentTemplate Context="Context">
+        <div class="popup-demo-events-footer">
+            <DxButton CssClass="popup-demo-events-button ms-2" RenderStyle="ButtonRenderStyle.Primary" 
+            Text="OK" Click="Context.CloseCallback" />
+        </div>
+    </FooterContentTemplate>
+</DxPopup>
 
